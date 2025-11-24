@@ -29,8 +29,8 @@ syntax keyword pureBasicLanguageKeywords Interface EndInterface
 syntax keyword pureBasicLanguageKeywords Str Chr
 highlight link pureBasicLanguageKeywords Keyword
 
-syntax keyword pureBasicFUnction Procedure EndProcedure ProcedureReturn
-highlight link pureBasicFUnction Function
+syntax keyword pureBasicFunction Procedure EndProcedure ProcedureReturn
+highlight link pureBasicFunction Function
 
 syntax keyword pureBasicConditional If ElseIf Else EndIf
 syntax keyword pureBasicConditional Select Case Default EndSelect
@@ -62,6 +62,7 @@ syntax keyword pureBasicPreCondit ClearStructure ResetStructure Bool
 highlight link pureBasicPreCondit PreCondit
 
 syntax match pureBasicConstant "\v#PB_(\a|_|\d)*"
+syntax match pureBasicConstant "\v#(\a|_|\d)*"
 highlight link pureBasicConstant Constant
 
 syntax keyword pureBasicRepeat For ForEach To Step Next
