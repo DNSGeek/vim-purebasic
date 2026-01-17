@@ -8,6 +8,7 @@ if exists("b:current_syntax")
 endif
 
 let b:current_syntax = "purebasic"
+syn case ignore
 
 " Keywords
 syntax keyword pureBasicLanguageKeywords Gosub Return FakeReturn Goto
