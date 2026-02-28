@@ -1,2 +1,4 @@
-au BufNewFile,BufRead *.pb set filetype=purebasic
-au BufNewFile,BufRead *.sb set filetype=purebasic
+" ftdetect/purebasic.vim
+" Automatically set filetype for PureBasic source files
+
+au BufRead,BufNewFile *.pb,*.pbi,*.pbf,*.pbp  setfiletype purebasic

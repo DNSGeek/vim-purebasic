@@ -1,0 +1,208 @@
+*purebasic.txt*  PureBasic and SpiderBasic syntax, indent, and folding for Vim
+*spiderbasic.txt*
+
+Author:  You
+Version: 1.0.0
+License: MIT
+
+==============================================================================
+CONTENTS                                                    *vim-purebasic-contents*
+
+  1. Introduction .................. |vim-purebasic-intro|
+  2. Installation .................. |vim-purebasic-install|
+  3. Features ...................... |vim-purebasic-features|
+  4. Configuration ................. |vim-purebasic-config|
+  5. File Types .................... |vim-purebasic-filetypes|
+  6. Folding ....................... |vim-purebasic-folding|
+  7. Compiler Integration .......... |vim-purebasic-make|
+
+==============================================================================
+1. INTRODUCTION                                               *vim-purebasic-intro*
+
+This plugin provides Vim/Neovim support for two languages in the PureBasic
+family:
+
+  - PureBasic (https://www.purebasic.com/) — desktop/native development
+  - SpiderBasic (https://www.spiderbasic.com/) — web and mobile (JS target)
+
+Both languages share a nearly identical syntax, so most features apply to
+both. SpiderBasic adds inline JavaScript support (`!` lines, EnableJS/DisableJS).
+
+The keyword database was generated directly from:
+  - PureBasic Reference Manual 6.21  (1,808 functions, 1,655 constants)
+  - SpiderBasic Reference Manual 3.02  (777 functions, 674 constants)
+
+==============================================================================
+2. INSTALLATION                                             *vim-purebasic-install*
+
+MANUAL ~
+
+Copy the plugin directories into your Vim runtime path:
+>
+  cp -r syntax/   ~/.vim/syntax/
+  cp -r indent/   ~/.vim/indent/
+  cp -r ftdetect/ ~/.vim/ftdetect/
+  cp -r ftplugin/ ~/.vim/ftplugin/
+  cp -r autoload/ ~/.vim/autoload/
+  cp -r doc/      ~/.vim/doc/
+  :helptags ~/.vim/doc
+<
+
+For Neovim, replace ~/.vim with ~/.config/nvim.
+
+VIM-PLUG ~
+>
+  Plug 'DNSGeek/vim-purebasic'
+<
+
+LAZY.NVIM ~
+>
+  { 'DNSGeek/vim-purebasic' }
+<
+
+PACKER ~
+>
+  use 'DNSGeek/vim-purebasic'
+<
+
+==============================================================================
+3. FEATURES                                                *vim-purebasic-features*
+
+SYNTAX HIGHLIGHTING ~
+
+Both filetypes get full syntax highlighting:
+
+  - Keywords (If/EndIf, For/Next, Procedure/EndProcedure, ...)
+  - All built-in functions (chunked into `syn keyword` groups)
+  - `#Constant` matching via `syn match` (handles the # sigil)
+  - `#PB_Compiler_*` and `#PB_OS_*` constants highlighted as Macro
+  - Type suffixes: `.i`, `.l`, `.s`, `.d`, `.b`, `.q`, `.f`, etc.
+  - Hex literals (`$FF`), binary literals (`%1010`)
+  - Strings (plain and escaped `~"..."`)
+  - Compiler directives (CompilerIf/CompilerEndIf, etc.)
+  - Labels (`MyLabel:`)
+
+SpiderBasic additionally highlights:
+  - Inline JavaScript lines (`!console.log("hi")`)
+  - `EnableJS` / `DisableJS` as PreProc
+
+INDENTATION ~
+
+Smart indentation via `basicindent#GetIndent()` handles all block keywords:
+  If/EndIf, For/Next, ForEach/Next, While/Wend, Repeat/Until|ForEver,
+  Select/EndSelect, Procedure/EndProcedure, Structure/EndStructure,
+  Module/EndModule, DeclareModule/EndDeclareModule, Macro/EndMacro,
+  Enumeration/EndEnumeration, Interface/EndInterface, With/EndWith,
+  DataSection/EndDataSection, Import/EndImport,
+  CompilerIf/CompilerEndIf, CompilerSelect/CompilerEndSelect,
+  EnableJS/DisableJS (SpiderBasic)
+
+FOLDING ~
+
+Syntax-based folding (`foldmethod=syntax`) is enabled automatically.
+Every major block type creates a fold:
+
+  Procedure / If / For / ForEach / While / Repeat / Select /
+  Structure / Macro / Module / DeclareModule / With / CompilerIf /
+  EnableJS (SpiderBasic)
+
+Use standard Vim fold commands:
+  `za`  toggle fold under cursor
+  `zR`  open all folds
+  `zM`  close all folds
+  `zr`  reduce fold level by one
+  `zm`  increase fold level by one
+
+MATCHIT ~
+
+If matchit.vim is loaded, `%` will jump between matching block keywords
+(If↔EndIf, For↔Next, Procedure↔EndProcedure, etc.).
+
+==============================================================================
+4. CONFIGURATION                                           *vim-purebasic-config*
+
+COMPILER PATH ~
+
+Set the environment variable before launching Vim:
+>
+  export PUREBASIC_HOME=/Applications/PureBasic
+  export SPIDERBASIC_HOME=/Applications/SpiderBasic
+<
+Or override makeprg directly in your vimrc:
+>
+  autocmd FileType purebasic
+    \ setlocal makeprg=/path/to/pbcompiler\ \"%\"
+  autocmd FileType spiderbasic
+    \ setlocal makeprg=/path/to/sbcompiler\ \"%\"
+<
+
+INDENTATION ~
+
+Override the default 2-space indent in your vimrc:
+>
+  autocmd FileType purebasic,spiderbasic setlocal shiftwidth=4 tabstop=4
+<
+
+FOLDING ~
+
+Folding is on by default. To disable:
+>
+  autocmd FileType purebasic,spiderbasic setlocal foldmethod=manual
+<
+Start with all folds open:
+>
+  autocmd FileType purebasic,spiderbasic setlocal foldlevelstart=99
+<
+
+==============================================================================
+5. FILE TYPES                                             *vim-purebasic-filetypes*
+
+  Extension    Language
+  ---------    --------
+  .pb  .pbi    PureBasic
+  .pbf .pbp    PureBasic
+  .sb  .sbi    SpiderBasic
+  .sbf .sbp    SpiderBasic
+
+To force a filetype manually:
+>
+  :set filetype=purebasic
+  :set filetype=spiderbasic
+<
+
+==============================================================================
+6. FOLDING                                                 *vim-purebasic-folding*
+
+See |vim-purebasic-features| for the list of foldable block types.
+
+Quick reference of fold commands:              *vim-purebasic-fold-commands*
+
+  `zo`  open fold
+  `zc`  close fold
+  `za`  toggle fold
+  `zO`  open fold recursively
+  `zC`  close fold recursively
+  `zA`  toggle fold recursively
+  `zR`  open ALL folds in buffer
+  `zM`  close ALL folds in buffer
+  `[z`  move to start of current fold
+  `]z`  move to end of current fold
+  `zj`  move to next fold
+  `zk`  move to previous fold
+
+==============================================================================
+7. COMPILER INTEGRATION                                      *vim-purebasic-make*
+
+If `$PUREBASIC_HOME` or `$SPIDERBASIC_HOME` is set, `:make` compiles the
+current file using the appropriate compiler.
+
+Error format is set to parse PureBasic/SpiderBasic compiler output:
+>
+  Error: <filename> Line <n> - <message>
+<
+Errors populate the quickfix list. Use:
+  `:copen`   open the quickfix window
+  `:cn`      jump to next error
+  `:cp`      jump to previous error
+
+ vim:tw=78:ts=8:ft=help:norl:
