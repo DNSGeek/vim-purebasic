@@ -1,6 +1,6 @@
 " Vim syntax file for SpiderBasic
 " Language:   SpiderBasic
-" Maintainer: You
+" Maintainer: DNSGeek
 " Generated from the SpiderBasic Reference Manual
 
 if exists("b:current_syntax") | finish | endif
@@ -13,9 +13,21 @@ syn case ignore
 syn match spComment ";.*$"
 
 " ── Strings ─────────────────────────────────────────────────────────────
-syn region spString  start='"'  end='"'  oneline
-syn region spString  start='~"' end='"'  oneline contains=spEscape
-syn match  spEscape  "\\[nt\"\\]" contained
+syn match  puEscape  "\\[nt\"\\]" contained
+
+syn region puString
+  \ start=+"+
+  \ skip=+\\."+
+  \ end=+"+
+  \ oneline
+  \ contains=puEscape,@Spell
+
+syn region puString
+  \ start=+\~"+
+  \ skip=+\\."+
+  \ end=+"+
+  \ oneline
+  \ contains=puEscape,@Spell
 
 " ── Numbers ─────────────────────────────────────────────────────────────
 syn match spNumber "\$[0-9A-Fa-f]\+"
@@ -25,6 +37,17 @@ syn match spNumber "\<[0-9]\+\(\.\?[0-9]*\)\?\([eE][+-]\?[0-9]\+\)\?\>"
 " ── Type suffixes (.i .l .s .d etc.) ────────────────────────────────────
 syn match spType "\.[bawuliqfdsc]\b"
 syn match spType "\.String\b"
+
+" Function names (definitions)
+syn match puFuncName "\<Procedure\(C\|DLL\|CDLL\)\?\s\+\zs\h\w*"
+syn match puFuncName "\<Declare\(C\|DLL\|CDLL\)\?\s\+\zs\h\w*"
+
+" Function calls
+syn match puFuncCall "\<\h\w*\>\s*("he=e-1
+
+" Highlight links
+hi def link puFuncName Function
+hi def link puFuncCall Identifier
 
 " ── Control flow ────────────────────────────────────────────────────────
 syn keyword spConditional If Else ElseIf EndIf Select Case Default EndSelect
